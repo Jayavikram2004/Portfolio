@@ -6,8 +6,11 @@ Configure Database and models.py for other databases
 or install Oracle Database 21c XE for our conditions.
 
 Create 
-user: test \n
+
+user: test
+
 password: admin 
+
 for database user
 
 
