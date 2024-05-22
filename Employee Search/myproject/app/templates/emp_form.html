@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if form.instance.pk %}Update{% else %}Create{% endif %} Employee</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .back-button {
+            background-color: #007bff;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 16px;
+            display: none;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>{% if form.instance.pk %}Update{% else %}Create{% endif %} Employee</h1>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form id="employee-form" method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+            <div class="form-group" style="padding-right: 16px;">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                
+                {% if field.name == 'pin' or field.name == 'ph_no' or field.name == 'hra' or field.name == 'basic' or field.name == 'emp_no' or field.name == 'rep_officer_no' %}
+                    <input type="number" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" oninput="maxLengthCheck(this)" required>    
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                <span class="error-message" id="error-{{ field.name }}">This field is mandatory</span>
+            </div>
+            {% endfor %}
+            <div class="form-group" style="padding-right: 16px;">
+                <label for="salary">Salary</label>
+                <input type="number" id="id_salary" disabled>
+            </div>
+            <button type="submit" id="save-button">Save</button>
+        </form>
+
+        <br>
+        <a href="{% url 'emp_list' %}"><button type="button" class="back-button">Back</button></a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const salaryField = document.getElementById("id_salary");
+            if (salaryField) {
+                salaryField.disabled = true;
+            }
+        });
+
+        function maxLengthCheck(object) {
+            if (object.name === 'pin') {
+                if (object.value.length > 8) object.value = object.value.slice(0, 8);
+                if (object.value.length < 6) object.setCustomValidity("Pin must be at least 6 digits long.");
+                else object.setCustomValidity("");
+            } else if (object.name === 'ph_no') {
+                if (object.value.length > 10) object.value = object.value.slice(0, 10);
+                if (object.value.length < 10) object.setCustomValidity("Phone number must be 10 digits long.");
+                else object.setCustomValidity("");
+            } else if (object.name === 'hra' || object.name === 'basic') {
+                if (object.value.length > 8) object.value = object.value.slice(0, 8);
+            } else if(object.name === 'emp_no') {
+                if (object.value.length > 8) object.value = object.value.slice(0, 8);
+                else object.setCustomValidity("");
+            } else if(object.name === 'rep_officer_no') {
+                if (object.value.length > 8) object.value = object.value.slice(0, 8);
+                else object.setCustomValidity("");
+            } else if(object.name === 'emp_name') {
+                if (object.value.length > 30) object.value = object.value.slice(0, 30);
+                else object.setCustomValidity("");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("employee-form");
+            const fields = form.querySelectorAll("input, select, textarea");
+            const errorMessages = form.querySelectorAll(".error-message");
+            const saveButton = document.getElementById("save-button");
+
+            // Function to update salary dynamically
+            function updateSalary() {
+                const basicField = document.getElementById("id_basic");
+                const hraField = document.getElementById("id_hra");
+                const salaryField = document.getElementById("id_salary");
+
+                const basicValue = parseFloat(basicField.value) || 0;
+                const hraValue = parseFloat(hraField.value) || 0;
+
+                // Update salary field with the sum of basic and hra
+                if (salaryField) {
+                    salaryField.value = basicValue + hraValue;
+                }
+            }
+
+            const basicField = document.getElementById("id_basic");
+            const hraField = document.getElementById("id_hra");
+
+            if (basicField) {
+                basicField.addEventListener("input", updateSalary);
+            }
+
+            if (hraField) {
+                hraField.addEventListener("input", updateSalary);
+            }
+
+            fields.forEach(field => {
+                field.addEventListener("blur", function() {
+                    if (!field.value.trim()) {
+                        document.getElementById("error-" + field.name).innerText = "This field is mandatory";
+                        document.getElementById("error-" + field.name).style.display = "inline";
+                    } else {
+                        document.getElementById("error-" + field.name).style.display = "none";
+                    }
+                });
+
+                field.addEventListener("keydown", function(event) {
+                    if (!field.value.trim() && event.keyCode === 9) {
+                        // If the field is empty and the tab key is pressed, prevent default behavior
+                        event.preventDefault();
+                        document.getElementById("error-" + field.name).innerText = "This field is mandatory";
+                        document.getElementById("error-" + field.name).style.display = "inline";
+                    }
+                    if ((field.name === 'pin' && field.value.length < 6) || (field.name === 'ph_no' && field.value.length < 10)) {
+                        if (event.keyCode === 9) { // Tab key
+                            event.preventDefault();
+                            document.getElementById("error-" + field.name).innerText = `${field.name === 'pin' ? 'Pin' : 'Phone number'} must be at least ${field.name === 'pin' ? '6' : '10'} digits long`;
+                            document.getElementById("error-" + field.name).style.display = "inline";
+                        }
+                    }
+                    
+                    if (field.name === 'emp_no' && field.value < 2) {
+                        if (event.keyCode === 9) { // Tab key
+                            event.preventDefault();
+                            document.getElementById("error-" + field.name).innerText = "Employee Number should be greater than 1";
+                            document.getElementById("error-" + field.name).style.display = "inline";
+                        }
+                    }
+                    if (field.name === 'rep_officer_no' && field.value < 2) {
+                        if (event.keyCode === 9) { // Tab key
+                            event.preventDefault();
+                            document.getElementById("error-" + field.name).innerText = "Reporting Officer Number should be greater than 1";
+                            document.getElementById("error-" + field.name).style.display = "inline";
+                        }
+                    }
+                });
+            });
+
+            saveButton.addEventListener("click", function(event) {
+                errorMessages.forEach(error => error.style.display = "none");
+
+                fields.forEach(field => {
+                    if (!field.value.trim()) {
+                        document.getElementById("error-" + field.name).style.display = "inline";
+                    }
+                });
+
+                // Check if any field is empty
+                const isEmptyField = [...fields].some(field => !field.value.trim());
+                if (isEmptyField) {
+                    event.preventDefault();
+                }
+                
+            });
+
+            // Prevent numbers in specific fields
+            const empNameField = document.getElementById("id_emp_name");
+            const repOfficerNameField = document.getElementById("id_rep_officer_name");
+
+            function preventNumbers(event) {
+                const key = event.key;
+                if (/\d/.test(key)) {
+                    event.preventDefault();
+                }
+            }
+
+            if (empNameField) {
+                empNameField.addEventListener("keydown", preventNumbers);
+            }
+
+            if (repOfficerNameField) {
+                repOfficerNameField.addEventListener("keydown", preventNumbers);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
