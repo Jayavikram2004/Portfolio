@@ -98,6 +98,7 @@
             {% csrf_token %}
             {% for field in form %}
             <div class="form-group">
+                
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {% if field.name == "sex" %}
                 <select id="{{ field.id_for_label }}" name="{{ field.name }}" style="width: 30.7vw;">
@@ -105,8 +106,10 @@
                     <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>{{ choice.1 }}</option>
                     {% endfor %}
                 </select>
+                {% elif field.name == "emp_no" %}
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" oninput="maxLengthCheck(this)" readonly style="color: #a0a0a0;">
                 {% else %}
-                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" oninput="maxLengthCheck(this)">
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value }}" oninput="maxLengthCheck(this)" >
                 {% endif %}
                 <span class="error-message" id="error-{{ field.name }}">This field is mandatory</span>
             </div>
