@@ -1,0 +1,123 @@
+{% comment %} <!DOCTYPE html>
+
+<html>
+<head>
+    <title>Employee Details</title>
+</head>
+<body>
+    <h1>{{ employee.emp_name }}</h1>
+    <p>Emp No: {{ employee.emp_no }}</p>
+    <p>Sex: {{ employee.sex }}</p>
+    <p>Location: {{ employee.location }}</p>
+    <!-- Add other fields as necessary -->
+    <a href="{% url 'emp_update' employee.emp_no %}">Edit</a>
+    <a href="{% url 'emp_delete' employee.emp_no %}">Delete</a>
+    <a href="{% url 'emp_list' %}">Back to list</a>
+</body>
+</html> {% endcomment %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .employee-details {
+            width: 50%;
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .employee-details h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .employee-details p {
+            font-size: 16px;
+            margin: 8px 0;
+            color: #555;
+            padding-bottom: 5px;
+        }
+
+        .employee-details p strong {
+            color: #333;
+
+        }
+
+        .employee-details .actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .employee-details .actions a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .employee-details .actions a:hover {
+            background-color: #0056b3;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .employee-details {
+                width: 100%;
+            }
+          }
+    </style>
+</head>
+
+<body>
+    <div class="employee-details">
+        <h1>Employee Details</h1>
+        <p><strong>Employee Number:</strong> {{ employee.emp_no }}</p>
+        <p><strong>Employee Name:</strong> {{ employee.emp_name }}</p>
+        <p><strong>Sex:</strong> {{ employee.sex }}</p>
+        <p><strong>Location:</strong> {{ employee.location }}</p>
+        <p><strong>Basic:</strong> {{ employee.basic }}</p>
+        <p><strong>HRA:</strong> {{ employee.hra }}</p>
+        <p><strong>Designation:</strong> {{ employee.desgn }}</p>
+        <p><strong>Department:</strong> {{ employee.dept }}</p>
+        <p><strong>Salary:</strong> {{ employee.salary }}</p>
+        <p><strong>Address Line 1:</strong> {{ employee.addr1 }}</p>
+        <p><strong>Address Line 2:</strong> {{ employee.addr2 }}</p>
+        <p><strong>Address Line 3:</strong> {{ employee.addr3 }}</p>
+        <p><strong>Pin:</strong> {{ employee.pin }}</p>
+        <p><strong>Phone No:</strong> {{ employee.ph_no }}</p>
+        <p><strong>Reporting Officer Number:</strong> {{ employee.rep_officer_no }}</p>
+        <p><strong>Reporting Officer Name:</strong> {{ employee.rep_officer_name }}</p>
+        <div class="actions">
+            <a href="{% url 'emp_update' employee.emp_no %}">Edit</a>
+            <a href="{% url 'emp_delete' employee.emp_no %}">Delete</a>
+            <a href="{% url 'emp_list' %}">Back to list</a>
+        </div>
+    </div>
+</body>
+
+</html>
