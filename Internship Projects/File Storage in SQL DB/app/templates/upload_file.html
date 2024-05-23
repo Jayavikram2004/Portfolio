@@ -45,6 +45,13 @@
 <body>
     <div class="container">
         <a href="{% url 'file_list' %}"><button type="button" class="back-but">Back</button></a>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <h1 class="text-center mb-4">Upload File</h1>
         <form id="uploadForm" method="post" enctype="multipart/form-data">
             {% csrf_token %}
